@@ -15,106 +15,116 @@ export default function ProfileEditor() {
     getProfile();
   }, []);
 
-  // Handle Image Upload to Supabase Storage
   const handleImageUpload = async (event) => {
     try {
       setUploading(true);
       if (!event.target.files || event.target.files.length === 0) return;
-
       const file = event.target.files[0];
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `profile-pics/${fileName}`;
 
-      // 1. Upload file to 'portfolio-images' bucket
       const { error: uploadError } = await supabase.storage
         .from('portfolio-images')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
-      // 2. Get the Public URL
       const { data } = supabase.storage.from('portfolio-images').getPublicUrl(filePath);
-      
       setFormData({ ...formData, image_url: data.publicUrl });
       alert('Image uploaded successfully!');
     } catch (error) {
-      alert('Error uploading image: ' + error.message);
+      alert('Error: ' + error.message);
     } finally {
       setUploading(false);
     }
   };
 
   const handleSave = async () => {
-  try {
-    const { error } = await supabase
-      .from('profiles')
-      .update({
-        full_name: formData.full_name,
-        bio: formData.bio,
-        organization: formData.organization,
-        job_role: formData.job_role,
-        image_url: formData.image_url
-      })
-      .eq('profile_id', 1);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: formData.full_name,
+          bio: formData.bio,
+          organization: formData.organization,
+          job_role: formData.job_role,
+          image_url: formData.image_url
+        })
+        .eq('profile_id', 1);
 
-    if (error) throw error;
-    alert('Profile Updated successfully!');
-  } catch (error) {
-    console.error('Full Error Object:', error);
-    alert(`Save Failed: ${error.message} (Code: ${error.code})`);
-  }
-};
+      if (error) throw error;
+      alert('Profile Updated successfully!');
+    } catch (error) {
+      alert(`Save Failed: ${error.message}`);
+    }
+  };
 
-  const inputStyle = { width: '100%', padding: '10px', marginBottom: '15px', borderRadius: '5px', border: '1px solid var(--color-sage)', display: 'block' };
+  const inputStyle = { 
+    width: '100%', 
+    padding: '12px', 
+    marginBottom: '15px', 
+    borderRadius: '8px', 
+    border: '1px solid var(--color-accent)', 
+    background: 'var(--color-bg-dark)', 
+    color: 'var(--color-cream-light)',
+    display: 'block',
+    outline: 'none'
+  };
 
   return (
     <div>
-      <h2 style={{ color: 'var(--color-dark-green)' }}>Edit Profile</h2>
-      <div style={{ background: 'white', padding: '30px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+      <h2 style={{ color: 'var(--color-cream-light)', marginBottom: '20px' }}>Edit Profile</h2>
+      <div style={{ 
+        background: 'var(--color-charcoal)', 
+        padding: '30px', 
+        borderRadius: '16px', 
+        boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+        border: '1px solid rgba(247, 231, 206, 0.05)'
+      }}>
         
-        {/* Profile Image Preview & Upload */}
-        <label>Profile Image</label>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '20px' }}>
+        <label style={{ display: 'block', marginBottom: '8px', color: 'var(--color-accent)', fontWeight: 'bold' }}>Profile Image</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '25px' }}>
           <img 
             src={formData.image_url || 'https://via.placeholder.com/100'} 
             alt="Preview" 
-            style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--color-sage)' }} 
+            style={{ width: '85px', height: '85px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--color-accent)' }} 
           />
           <input 
             type="file" 
             accept="image/*" 
             onChange={handleImageUpload} 
             disabled={uploading}
+            style={{ color: 'var(--color-cream-light)' }}
           />
         </div>
 
-        <label>Full Name</label>
+        <label style={{ color: 'var(--color-cream-light)' }}>Full Name</label>
         <input style={inputStyle} value={formData.full_name} onChange={(e) => setFormData({...formData, full_name: e.target.value})} />
         
-        <label>Job Role</label>
+        <label style={{ color: 'var(--color-cream-light)' }}>Job Role</label>
         <input style={inputStyle} value={formData.job_role} onChange={(e) => setFormData({...formData, job_role: e.target.value})} />
 
-        {/* Added Organization Field */}
-        <label>Organization</label>
+        <label style={{ color: 'var(--color-cream-light)' }}>Organization</label>
         <input style={inputStyle} value={formData.organization} onChange={(e) => setFormData({...formData, organization: e.target.value})} />
         
-        <label>Bio</label>
-        <textarea style={{...inputStyle, height: '100px'}} value={formData.bio} onChange={(e) => setFormData({...formData, bio: e.target.value})} />
+        <label style={{ color: 'var(--color-cream-light)' }}>Bio</label>
+        <textarea style={{...inputStyle, height: '100px', resize: 'vertical'}} value={formData.bio} onChange={(e) => setFormData({...formData, bio: e.target.value})} />
         
         <button 
           onClick={handleSave}
           style={{ 
-            background: 'var(--color-dark-green)', 
+            background: 'var(--color-accent)', 
             color: 'white', 
             border: 'none', 
-            padding: '12px 24px', 
-            borderRadius: '5px', 
+            padding: '14px 28px', 
+            borderRadius: '8px', 
             cursor: 'pointer',
-            fontWeight: 'bold' 
+            fontWeight: 'bold',
+            marginTop: '10px'
           }}
         >
-          {uploading ? 'Uploading...' : 'Save Changes'}
+          {uploading ? 'Processing...' : 'Save Changes'}
         </button>
       </div>
     </div>

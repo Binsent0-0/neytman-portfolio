@@ -11,30 +11,23 @@ export default function ProjectManager() {
     setProjects(data || []);
   };
 
-  useEffect(() => {
-    fetchProjects();
-  }, []);
+  useEffect(() => { fetchProjects(); }, []);
 
-  // Handle Image Upload to Storage
   const handleImageUpload = async (event) => {
     try {
       setUploading(true);
       const file = event.target.files[0];
       if (!file) return;
-
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `projects/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('portfolio-images')
-        .upload(filePath, file);
-
+      const { error: uploadError } = await supabase.storage.from('portfolio-images').upload(filePath, file);
       if (uploadError) throw uploadError;
 
       const { data } = supabase.storage.from('portfolio-images').getPublicUrl(filePath);
       setNewProj({ ...newProj, image_url: data.publicUrl });
-      alert("Image uploaded!");
+      alert("Uploaded!");
     } catch (error) {
       alert("Error: " + error.message);
     } finally {
@@ -43,155 +36,73 @@ export default function ProjectManager() {
   };
 
   const handleAddProject = async () => {
-    if (!newProj.title || !newProj.image_url) {
-      return alert("Title and Image are required");
-    }
-    
+    if (!newProj.title || !newProj.image_url) return alert("Title and Image required");
     const { error } = await supabase.from('projects').insert([{ ...newProj, profile_id: 1 }]);
     if (!error) {
       setNewProj({ title: '', description: '', image_url: '' });
       fetchProjects();
-    } else {
-      alert("Error adding project: " + error.message);
     }
   };
 
   const handleDelete = async (projectId, projectTitle) => {
-    if (window.confirm(`Are you sure you want to delete "${projectTitle}"?`)) {
-      const { error } = await supabase.from('projects').delete().eq('project_id', projectId);
-      if (error) {
-        alert("Error deleting project: " + error.message);
-      } else {
-        fetchProjects();
-      }
+    if (window.confirm(`Delete "${projectTitle}"?`)) {
+      await supabase.from('projects').delete().eq('project_id', projectId);
+      fetchProjects();
     }
+  };
+
+  const inputStyle = { 
+    width: '100%', padding: '12px', marginBottom: '15px', borderRadius: '8px', 
+    border: '1px solid var(--color-accent)', background: 'var(--color-bg-dark)', 
+    color: 'var(--color-cream-light)', boxSizing: 'border-box'
   };
 
   return (
     <div style={{ maxWidth: '800px' }}>
-      <h2 style={{ color: 'var(--color-dark-green)', marginBottom: '20px' }}>Manage Projects</h2>
+      <h2 style={{ color: 'var(--color-cream-light)', marginBottom: '25px' }}>Manage Portfolio</h2>
       
-      {/* Add New Project Form */}
-      <div style={{ background: 'white', padding: '25px', borderRadius: '12px', marginBottom: '30px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
-        <h3 style={{ marginTop: 0, marginBottom: '20px' }}>Add New Project</h3>
+      <div style={{ 
+        background: 'var(--color-charcoal)', padding: '30px', borderRadius: '16px', 
+        marginBottom: '40px', boxShadow: '0 8px 30px rgba(0,0,0,0.3)' 
+      }}>
+        <h3 style={{ color: 'var(--color-accent)', marginTop: 0 }}>Add New Project</h3>
         
-        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Project Image</label>
-        <div style={{ marginBottom: '20px' }}>
-          {newProj.image_url && (
-            <img 
-              src={newProj.image_url} 
-              alt="Preview" 
-              style={{ width: '120px', height: '80px', borderRadius: '8px', objectFit: 'cover', display: 'block', marginBottom: '10px', border: '1px solid #ddd' }} 
-            />
-          )}
-          <input 
-            type="file" 
-            accept="image/*" 
-            onChange={handleImageUpload} 
-            disabled={uploading} 
-          />
+        <label style={{ color: 'var(--color-cream-light)', display: 'block', margin: '15px 0 8px' }}>Project Cover</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '20px' }}>
+          {newProj.image_url && <img src={newProj.image_url} style={{ width: '100px', height: '60px', borderRadius: '8px', objectFit: 'cover', border: '2px solid var(--color-accent)' }} alt="Preview" />}
+          <input type="file" onChange={handleImageUpload} disabled={uploading} style={{ color: 'var(--color-cream-light)' }} />
         </div>
 
-        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Title</label>
-        <input 
-          placeholder="Project Title" 
-          value={newProj.title} 
-          onChange={e => setNewProj({...newProj, title: e.target.value})} 
-          style={inputStyle} 
-        />
-
-        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Description</label>
-        <textarea 
-          placeholder="What is this project about?" 
-          value={newProj.description} 
-          onChange={e => setNewProj({...newProj, description: e.target.value})} 
-          style={{ ...inputStyle, minHeight: '100px', resize: 'vertical' }} 
-        />
+        <input placeholder="Title" value={newProj.title} onChange={e => setNewProj({...newProj, title: e.target.value})} style={inputStyle} />
+        <textarea placeholder="Description" value={newProj.description} onChange={e => setNewProj({...newProj, description: e.target.value})} style={{ ...inputStyle, minHeight: '100px' }} />
         
-        <button 
-          onClick={handleAddProject} 
-          style={{...btnStyle, opacity: uploading ? 0.5 : 1, width: '100%', marginTop: '10px'}} 
-          disabled={uploading}
-        >
-          {uploading ? 'Uploading Image...' : 'Add Project to Portfolio'}
+        <button onClick={handleAddProject} disabled={uploading} style={{ 
+          background: 'var(--color-accent)', color: 'white', padding: '14px', width: '100%', 
+          borderRadius: '8px', border: 'none', fontWeight: 'bold', cursor: 'pointer' 
+        }}>
+          {uploading ? 'Uploading...' : 'Add Project'}
         </button>
       </div>
 
-      {/* List Existing Projects */}
-      <h3 style={{ marginBottom: '15px' }}>Existing Projects</h3>
+      <h3 style={{ color: 'var(--color-cream-light)', marginBottom: '20px' }}>Existing Portfolio</h3>
       <div style={{ display: 'grid', gap: '15px' }}>
-        {projects.length === 0 ? (
-          <p style={{ color: '#666', fontStyle: 'italic' }}>No projects found in database.</p>
-        ) : (
-          projects.map(p => (
-            <div 
-              key={p.project_id} 
-              style={{ 
-                padding: '15px', 
-                background: 'var(--color-light-green)', 
-                borderRadius: '12px', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-              }}
-            >
-              {/* Left Side: Thumbnail and Title */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <img 
-                  src={p.image_url} 
-                  alt="" 
-                  style={{ width: '60px', height: '60px', borderRadius: '8px', objectFit: 'cover', background: 'white' }} 
-                />
-                <div>
-                  <strong style={{ display: 'block', color: 'var(--color-dark-green)', fontSize: '1.1rem' }}>{p.title}</strong>
-                  <span style={{ fontSize: '0.85rem', color: '#555' }}>ID: {p.project_id}</span>
-                </div>
-              </div>
-
-              {/* Right Side: Action Button */}
-              <button 
-                onClick={() => handleDelete(p.project_id, p.title)}
-                style={{ 
-                  background: '#ff4d4d', 
-                  color: 'white', 
-                  border: 'none', 
-                  padding: '10px 18px', 
-                  borderRadius: '8px', 
-                  cursor: 'pointer', 
-                  fontWeight: 'bold',
-                  transition: 'background 0.2s'
-                }}
-                onMouseEnter={(e) => e.target.style.background = '#cc0000'}
-                onMouseLeave={(e) => e.target.style.background = '#ff4d4d'}
-              >
-                Delete
-              </button>
+        {projects.map(p => (
+          <div key={p.project_id} style={{ 
+            padding: '15px', background: 'var(--color-charcoal)', borderRadius: '12px', 
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            border: '1px solid rgba(247, 231, 206, 0.05)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <img src={p.image_url} style={{ width: '50px', height: '50px', borderRadius: '6px', objectFit: 'cover' }} alt="" />
+              <strong style={{ color: 'var(--color-cream-light)' }}>{p.title}</strong>
             </div>
-          ))
-        )}
+            <button onClick={() => handleDelete(p.project_id, p.title)} style={{ 
+              background: 'transparent', color: '#ff4d4d', border: '1px solid #ff4d4d', 
+              padding: '8px 15px', borderRadius: '6px', cursor: 'pointer' 
+            }}>Delete</button>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
-
-const inputStyle = { 
-  width: '100%', 
-  padding: '12px', 
-  marginBottom: '15px', 
-  borderRadius: '8px', 
-  border: '1px solid #ddd',
-  boxSizing: 'border-box',
-  fontSize: '1rem'
-};
-
-const btnStyle = { 
-  background: 'var(--color-dark-green)', 
-  color: 'white', 
-  padding: '12px 24px', 
-  border: 'none', 
-  borderRadius: '8px', 
-  cursor: 'pointer', 
-  fontWeight: 'bold',
-  fontSize: '1rem'
-};

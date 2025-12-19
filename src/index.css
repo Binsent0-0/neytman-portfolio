@@ -1,17 +1,141 @@
+/* COLOR PALETTE:
+  Deep Black: #121212 (Main Background)
+  Charcoal Dark: #222831 (Secondary Background)
+  Charcoal Light: #393E46 (Cards & Surfaces)
+  Sapphire Blue: #0F52BA (Primary Accent)
+  Slate Gray: #444444 & #888888 (UI Elements)
+  Light Gray: #E0E0E0 (Primary Text)
+*/
+
 :root {
-  --color-cream: #F6F0D7;
-  --color-light-green: #C5D89D;
-  --color-sage: #9CAB84;
-  --color-dark-green: #89986D;
-  --text-dark: #2d3436;
+  --color-bg-deep: #121212;
+  --color-charcoal-dark: #222831;
+  --color-charcoal-light: #393E46;
+  --color-text-primary: #E0E0E0;
+  --color-text-muted: #B0B0B0;
+  
+  /* Sapphire Blue Accent */
+  --color-accent: #0F52BA; 
+  --color-accent-hover: #1e6be6;
+  --color-accent-glow: rgba(15, 82, 186, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: var(--color-cream);
-  color: var(--text-dark);
+  background-color: var(--color-bg-deep);
+  color: var(--color-text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
 }
 
-section { padding: 80px 20px; max-width: 1000px; margin: 0 auto; }
-h2 { color: var(--color-dark-green); border-bottom: 2px solid var(--color-sage); display: inline-block; }
+/* --- Section Styling --- */
+section {
+  padding: 80px 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+h1, h2, h3 {
+  color: var(--color-text-primary);
+  margin-top: 0;
+}
+
+h2 {
+  font-size: 2rem;
+  border-bottom: 3px solid var(--color-accent);
+  padding-bottom: 10px;
+  margin-bottom: 40px;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* --- Input & Form Styling --- */
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid var(--color-charcoal-light);
+  background-color: var(--color-charcoal-dark);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-glow);
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* --- Button Styling --- */
+button {
+  background-color: var(--color-accent);
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px 0 var(--color-accent-glow);
+}
+
+button:hover {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px 0 var(--color-accent-glow);
+}
+
+button:disabled {
+  background-color: #444444;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* --- Scrollbar Styling --- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-charcoal-light);
+  border-radius: 5px;
+  border: 2px solid var(--color-bg-deep);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+section {
+  animation: fadeIn 0.8s ease-out;
+}

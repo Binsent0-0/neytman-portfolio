@@ -6,9 +6,8 @@ import {
   FaPython, 
   FaReact, 
   FaDatabase,
-  FaHashtag // Using this as a clean fallback for C# if SiCsharp fails
+  FaHashtag 
 } from 'react-icons/fa';
-import { TbBrandCSharp } from 'react-icons/tb'; // Tabler Icons often has better brand support
 
 export default function Skills() {
   const skills = [
@@ -18,13 +17,19 @@ export default function Skills() {
     { name: "Java", icon: <FaJava /> },
     { name: "Python", icon: <FaPython /> },
     { name: "React", icon: <FaReact /> },
-    { name: "C#", icon: <FaHashtag /> }, // Reliable fallback
+    { name: "C#", icon: <FaHashtag /> }, 
     { name: "SQL", icon: <FaDatabase /> },
   ];
 
   return (
-    <section id="skills" style={{ padding: '60px 20px', maxWidth: '1000px', margin: '0 auto' }}>
-      <h2 style={{ marginBottom: '20px' }}>Skills</h2>
+    <section id="skills">
+      <h2 style={{ 
+        color: 'var(--color-cream-light)', 
+        borderBottom: '2px solid var(--color-accent)',
+        marginBottom: '30px' 
+      }}>
+        Technical Skills
+      </h2>
       
       <div style={{ 
         display: 'flex', 
@@ -37,18 +42,37 @@ export default function Skills() {
           <div 
             key={skill.name} 
             style={{ 
-              background: 'var(--color-sage)', 
-              color: 'white', 
-              padding: '10px 20px', 
+              background: 'var(--color-charcoal)', // Deep charcoal background
+              color: 'var(--color-cream-light)',  // Light cream text
+              padding: '12px 24px', 
               borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
-              fontSize: '1.1rem',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+              gap: '12px',
+              fontSize: '1rem',
+              fontWeight: '500',
+              border: '1px solid rgba(146, 129, 122, 0.2)', // Subtle bronze border
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-3px)';
+              e.currentTarget.style.borderColor = 'var(--color-accent)';
+              e.currentTarget.style.background = 'rgba(57, 62, 70, 0.8)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.borderColor = 'rgba(146, 129, 122, 0.2)';
+              e.currentTarget.style.background = 'var(--color-charcoal)';
             }}
           >
-            <span style={{ fontSize: '1.4rem', display: 'flex' }}>{skill.icon}</span>
+            <span style={{ 
+              fontSize: '1.4rem', 
+              display: 'flex', 
+              color: 'var(--color-accent)' // Bronze color for the icon itself
+            }}>
+              {skill.icon}
+            </span>
             {skill.name}
           </div>
         ))}
