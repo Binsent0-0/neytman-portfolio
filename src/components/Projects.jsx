@@ -48,10 +48,10 @@ export default function Projects({ projects }) {
                   e.currentTarget.style.transform = 'translateY(-10px)';
                   e.currentTarget.style.borderColor = 'var(--color-accent)';
                   e.currentTarget.style.boxShadow = '0 15px 35px var(--color-accent-glow)';
-                  // Targets the overlay div to remove the fade
+                  
                   const overlay = e.currentTarget.querySelector('.image-overlay');
                   if (overlay) overlay.style.opacity = '0';
-                  // Slightly zooms the image
+                  
                   const img = e.currentTarget.querySelector('img');
                   if (img) img.style.transform = 'scale(1.1)';
                 }}
@@ -59,10 +59,10 @@ export default function Projects({ projects }) {
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
                   e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.7)';
-                  // Resets the fade
+                  
                   const overlay = e.currentTarget.querySelector('.image-overlay');
                   if (overlay) overlay.style.opacity = '1';
-                  // Resets image scale
+                  
                   const img = e.currentTarget.querySelector('img');
                   if (img) img.style.transform = 'scale(1)';
                 }}
@@ -90,34 +90,30 @@ export default function Projects({ projects }) {
                       height: '100%', 
                       background: 'linear-gradient(to bottom, transparent, #000000)',
                       transition: 'opacity 0.4s ease',
-                      opacity: 1 // Visible by default
+                      opacity: 1
                     }} 
                   />
                 </div>
 
-                <div style={{ padding: '25px' }}>
-                  <h3 style={{ color: 'var(--color-text-primary)', marginTop: 0, marginBottom: '12px', fontSize: '1.5rem' }}>
+                {/* 2. Content Area */}
+                <div style={{ padding: '25px', flexGrow: 1 }}>
+                  <h3 style={{ 
+                    color: 'var(--color-text-primary)', 
+                    marginTop: 0, 
+                    marginBottom: '12px', 
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold'
+                  }}>
                     {proj.title}
                   </h3>
-                  <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', lineHeight: '1.6', margin: 0 }}>
+                  <p style={{ 
+                    color: 'var(--color-text-muted)', 
+                    fontSize: '0.95rem', 
+                    lineHeight: '1.6', 
+                    margin: 0 
+                  }}>
                     {proj.description}
                   </p>
-                  
-                  <div style={{ 
-                    marginTop: '20px', 
-                    fontSize: '0.85rem', 
-                    fontWeight: 'bold', 
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                    background: 'linear-gradient(90deg, #0F52BA 0%, #00BFFF 100%)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}>
-                    View Details <span>&rarr;</span>
-                  </div>
                 </div>
               </div>
             ))}
