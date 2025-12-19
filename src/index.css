@@ -1,0 +1,17 @@
+:root {
+  --color-cream: #F6F0D7;
+  --color-light-green: #C5D89D;
+  --color-sage: #9CAB84;
+  --color-dark-green: #89986D;
+  --text-dark: #2d3436;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-cream);
+  color: var(--text-dark);
+}
+
+section { padding: 80px 20px; max-width: 1000px; margin: 0 auto; }
+h2 { color: var(--color-dark-green); border-bottom: 2px solid var(--color-sage); display: inline-block; }
